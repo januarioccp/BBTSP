@@ -354,7 +354,7 @@ void profundidade(Node &no)
 	{
 		nutella = arvoreDFS.top();
 		if(!(nutella.bound < GUB)){
-			arvoreBest.pop();
+			arvoreDFS.pop();
 			continue;
 		}
 		n.arcos_proibidos = nutella.arcos_proibidos;
