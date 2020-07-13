@@ -63,8 +63,6 @@ void escolherSubtour(Node &no);
 void printArvore(list<Node> &arvore);
 void printArvore(stack<Node> &tree);
 void printNode(Node &no);
-void prune(list<Node> &tree, int GUB);
-void prune(stack<Node> &tree, int GUB);
 void largura(Node &no);
 void profundidade(Node &no);
 
@@ -254,31 +252,6 @@ void printNode(Node &no)
 	cout << " - Cost " << no.bound << endl;
 }
 
-void prune(list<Node> &tree, int GUB)
-{
-	for (list<Node>::iterator it = tree.begin(); it != tree.end(); ++it)
-		if (!(it->bound < GUB))
-			tree.erase(it);
-}
-
-void prune(stack<Node> &tree, int LB)
-{
-	stack<Node> temp;
-	while(!tree.empty()){
-		if(tree.top().bound < LB){
-			temp.push(tree.top());
-		}
-		else
-			cout<<"Prune!"<<endl;
-		tree.pop();
-	}
-
-	while(!temp.empty()){
-		tree.push(temp.top());
-		temp.pop();
-	}
-}
-
 bool compare(Node &a, Node &b)
 {
 	if (a.bound != b.bound)
@@ -311,9 +284,8 @@ void largura(Node &no)
 	{
 		nutella = arvore.front();
 		arvore.pop_front();
-		if(!(nutella.bound < GUB)){
+		if(!(nutella.bound < GUB))
 			continue;
-		}
 
 		escolherSubtour(nutella);
 		for (int i = 0; i < nutella.subtour[nutella.escolhido].size() - 1; i++)
@@ -333,7 +305,6 @@ void largura(Node &no)
 					printNode(n);
 					GUB = n.bound;
 					no = n;
-					prune(arvore, GUB);
 				}
 			}
 		}
@@ -353,10 +324,10 @@ void profundidade(Node &no)
 	while (!arvoreDFS.empty())
 	{
 		nutella = arvoreDFS.top();
-		if(!(nutella.bound < GUB)){
-			arvoreDFS.pop();
+		arvoreDFS.pop();
+		if(!(nutella.bound < GUB))	
 			continue;
-		}
+		
 		n.arcos_proibidos = nutella.arcos_proibidos;
 		arco_proibido.first = nutella.subtour[nutella.escolhido][nutella.index];
 		arco_proibido.second = nutella.subtour[nutella.escolhido][nutella.index + 1];
@@ -365,7 +336,6 @@ void profundidade(Node &no)
 		escolherSubtour(n);
 
 		nutella.index++;
-		arvoreDFS.pop();
 		
 		if (nutella.index < nutella.subtour[nutella.escolhido].size()-1)
 			arvoreDFS.push(nutella);
@@ -379,7 +349,6 @@ void profundidade(Node &no)
 				GUB = n.bound;
 				no = n;
 				arvoreDFS.pop();
-				prune(arvoreDFS, GUB);
 			}
 		}
 	}
